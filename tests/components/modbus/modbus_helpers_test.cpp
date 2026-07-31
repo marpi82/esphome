@@ -196,12 +196,12 @@ TEST(ModbusHelpersTest, PayloadToNumberDecodesValidWord) {
 
 TEST(ModbusHelpersTest, PayloadToNumberDecodesSwappedUnsignedWord) {
   const std::vector<uint8_t> data{0x34, 0x12};
-  EXPECT_EQ(payload_to_number(std::span<const uint8_t>(data), SensorValueType::U_WORD_R, 0, 0xFFFFFFFF), 0x1234);
+  EXPECT_EQ(payload_to_number(std::span<const uint8_t>(data), SensorValueType::U_WORD_S, 0, 0xFFFFFFFF), 0x1234);
 }
 
 TEST(ModbusHelpersTest, PayloadToNumberDecodesSwappedSignedWord) {
   const std::vector<uint8_t> data{0xFE, 0xFF};
-  EXPECT_EQ(payload_to_number(std::span<const uint8_t>(data), SensorValueType::S_WORD_R, 0, 0xFFFFFFFF), -2);
+  EXPECT_EQ(payload_to_number(std::span<const uint8_t>(data), SensorValueType::S_WORD_S, 0, 0xFFFFFFFF), -2);
 }
 
 // --- registers_to_number ---------------------------------------------------
@@ -214,7 +214,7 @@ TEST(ModbusHelpersTest, RegistersToNumberDecodesWord) {
 
 TEST(ModbusHelpersTest, RegistersToNumberDecodesSwappedWord) {
   const uint16_t registers[] = {0x3412};
-  EXPECT_EQ(registers_to_number(registers, 1, SensorValueType::U_WORD_R), 0x1234);
+  EXPECT_EQ(registers_to_number(registers, 1, SensorValueType::U_WORD_S), 0x1234);
 }
 
 TEST(ModbusHelpersTest, RegistersToNumberDecodesDwordHighWordFirst) {

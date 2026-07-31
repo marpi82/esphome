@@ -37,7 +37,7 @@ TEST(ModbusServerWrite, SingleWordSucceeds) {
 TEST(ModbusServerWrite, SwappedWordSucceeds) {
   ModbusServer server;
   int64_t written = -1;
-  ServerRegister reg(0x0000, SensorValueType::U_WORD_R, 1);
+  ServerRegister reg(0x0000, SensorValueType::U_WORD_S, 1);
   reg.write_lambda = [&written](int64_t value) {
     written = value;
     return true;
@@ -153,7 +153,7 @@ TEST(ModbusServerRead, SingleWordSucceeds) {
 
 TEST(ModbusServerRead, SwappedWordReturnsByteSwappedRegister) {
   ModbusServer server;
-  ServerRegister reg(0x0000, SensorValueType::U_WORD_R, 1);
+  ServerRegister reg(0x0000, SensorValueType::U_WORD_S, 1);
   reg.read_lambda = []() -> int64_t { return 0x1234; };
   server.add_server_register(&reg);
 
