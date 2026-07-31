@@ -716,3 +716,27 @@ The project uses English for non-code content. When drafting documentation, code
 PR descriptions, and similar text, avoid technical jargon. Instead, express concepts in plain English,
 using standard technical terms only when required. Ensure the text is readily comprehensible to a wide
 audience, including non-native English speakers.
+
+## Cursor Cloud specific instructions
+
+These notes cover non-obvious environment caveats. Standard commands live in section 6 above
+(`pytest tests/unit_tests`, `esphome config`/`compile`, `script/*`).
+
+* **Virtual environment:** Python dependencies are installed into `./venv` (created by the startup
+  update script). Activate it before running any tooling: `source venv/bin/activate`. After that,
+  `esphome`, `pytest`, `ruff`, `pre-commit`, etc. are on `PATH`. Alternatively run one-off commands
+  with `python3 script/run-in-env.py <cmd>`.
+* **`python3 -m venv` does not work here:** the system lacks `ensurepip`/`python3-venv`, so venvs must
+  be created with `uv venv --seed venv` (the update script and `script/setup` already do this). Do not
+  switch to `python -m venv`.
+* **`pre-commit install` fails** because the sandbox sets `git config core.hooksPath`. This is expected
+  and harmless. To lint, run hooks directly instead of installing them, e.g.
+  `pre-commit run --all-files` or `pre-commit run --files <changed files>` (or `script/quicklint`).
+* **No hardware needed to run firmware end-to-end:** the `host` platform compiles a config into a
+  native Linux binary using the system `g++`. Example: `esphome compile <config>.yaml` then run
+  `.esphome/build/<name>/.pioenvs/<name>/program`. Sensor/state debug lines are logged at `VERBOSE`
+  level, so set `logger: {level: VERBOSE}` in the config to see them. Integration tests
+  (`script/integration_test`) rely on this same host platform.
+* **PlatformIO / MCU builds:** compiling for real MCU targets (esp32/esp8266/etc.) makes PlatformIO
+  download large toolchains on first use and needs network access; the hardware-free `host` platform
+  above is the fast path for verifying the toolchain works.
